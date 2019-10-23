@@ -1,0 +1,48 @@
+# v2 syntax
+version: '2'
+
+# Named volumes
+volumes:
+  # MySQL Data
+  stock-mysql-data:
+    driver: local
+
+  # Redis Data
+  stock-redis-data:
+    driver: local
+
+services:
+  # MySQL (5.7)
+  mysql:
+    image: mysql:5.7
+    container_name: stock-mysql
+    volumes:
+      - stock-mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=stock
+
+  # Redis
+  cache:
+    image: redis:alpine
+    container_name: stock-redis
+    command: --appendonly yes
+    volumes:
+      - stock-redis-data:/data
+    ports:
+      - 6379:6379
+
+
+  # PHP (with Nginx)
+  app:
+    image: ambientum/php:7.3-nginx
+    container_name: stock-app
+    volumes:
+      - .:/var/www/app
+    ports:
+      - 8000:8080
+    links:
+      - mysql
+      - cache
