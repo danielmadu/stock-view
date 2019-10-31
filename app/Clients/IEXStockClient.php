@@ -54,6 +54,15 @@ final class IEXStockClient extends Client
         }
     }
 
+    public function getLastNews($symbol, $qtd = 1)
+    {
+        try {
+            return $this->get($this->parseUri($symbol) . '/news/last/'.$qtd, $this->auth())->getContents();
+        } catch (GuzzleException $e) {
+            throw $e;
+        }
+    }
+
     protected function auth()
     {
         return [

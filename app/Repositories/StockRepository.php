@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 
 use App\Clients\IEXStockClient;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class StockRepository
@@ -44,6 +45,15 @@ class StockRepository
         }
         return Cache::remember('history:'.$symbol.':'.$range, $time, function () use($symbol, $range) {
             return json_decode($this->client->getHistory($symbol, $range));
+        });
+    }
+
+    public function getLastNews($symbol)
+    {
+        return Cache::remember('news:'.$symbol, now()->addMinute(), function () use($symbol) {
+            $lastNews = json_decode($this->client->getLastNews($symbol))[0];
+            $lastNews->dateFormatted = Carbon::createFromTimestamp($lastNews->datetime)->format("d/m/Y H:i:s");
+            return $lastNews;
         });
     }
 

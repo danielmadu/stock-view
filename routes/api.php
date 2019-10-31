@@ -62,4 +62,10 @@ Route::prefix('stock/{symbol}')->group(function () {
         $response = $stockRepository->getHistory($symbol, $range);
         return response()->json($response->data ?? $response);
     });
+
+    Route::get('lastNews', function ($symbol) {
+        $stockRepository = new StockRepository();
+        $response = $stockRepository->getLastNews($symbol);
+        return response()->json($response);
+    });
 });

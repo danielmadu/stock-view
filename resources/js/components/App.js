@@ -13,6 +13,7 @@ class App extends React.Component {
         changePercent: 0,
         symbol: null,
         companyInfo: {},
+        lastNews: {},
         error: false,
         show: false,
         history: [],
@@ -110,6 +111,18 @@ class App extends React.Component {
           });
     };
 
+    getLastNews = (symbol) => {
+        axios.get(`http://localhost:8000/api/stock/${symbol}/lastNews`)
+            .then(response => {
+                console.log(response.data);
+                this.setState({lastNews: response.data})
+            })
+            .catch(error => {
+                // this.setState({error: true});
+                console.log(error);
+            });
+    };
+
     render() {
         return (
             <div className="container">
@@ -123,6 +136,7 @@ class App extends React.Component {
                                     this.getLastPrice(symbol);
                                     this.getCompany(symbol);
                                     this.getHistoric(symbol, 'dynamic');
+                                    this.getLastNews(symbol);
                                 }}/>
                             </div>
 
@@ -146,6 +160,23 @@ class App extends React.Component {
                                                         symbol={this.state.symbol}
                                                         getHistoric={this.getHistoric}
                                                     />
+
+                                                    <div className="row">
+                                                        <div className="col-md-12">
+                                                            <div className="card">
+                                                                <div className="card-body">
+                                                                    <h5 className="card-title">
+                                                                        {this.state.lastNews.headline}
+                                                                    </h5>
+                                                                    <h6 className="card-subtitle mb-2 text-muted">{this.state.lastNews.dateFormatted}</h6>
+                                                                    <div className="card-body">
+                                                                        {this.state.lastNews.summary}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
                                                 </>
                                             )
                                         }
