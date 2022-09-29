@@ -27,6 +27,6 @@
         "sass-loader": "^7.1.0"
     },
     "dependencies": {
-        "recharts": "^1.8.3"
+        "recharts": "^2.1.14"
     }
 }
